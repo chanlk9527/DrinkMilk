@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import {
   ResponsiveContainer, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip,
@@ -13,6 +13,7 @@ interface Props {
 }
 
 export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
+  const [closingForm, setClosingForm] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [weightKg, setWeightKg] = useState('')
@@ -21,6 +22,11 @@ export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
   const [notes, setNotes] = useState('')
   const [saving, setSaving] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+
+  const closeFormSheet = useCallback(() => {
+    setClosingForm(true)
+    setTimeout(() => { setShowForm(false); setClosingForm(false) }, 250)
+  }, [])
 
   const records = useMemo(() =>
     [...(data?.growthRecords ?? [])].sort((a, b) => a.date.localeCompare(b.date)),
@@ -186,12 +192,12 @@ export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
 
       {/* 新增记录弹层 */}
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowForm(false)}>
-          <div className="bg-cream w-full max-w-lg rounded-t-3xl p-6 space-y-4 animate-slide-up" onClick={e => e.stopPropagation()}>
+        <div className={`fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm ${closingForm ? 'animate-backdrop-out' : 'animate-backdrop-in'}`} onClick={closeFormSheet}>
+          <div className={`bg-cream w-full max-w-lg rounded-t-3xl p-6 space-y-4 ${closingForm ? 'animate-slide-down' : 'animate-slide-up'}`} onClick={e => e.stopPropagation()}>
             <div className="w-10 h-1 bg-warm-200 rounded-full mx-auto mb-2" />
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-semibold text-text">记录成长数据</h2>
-              <button onClick={() => setShowForm(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-warm-50 text-text-light text-lg leading-none">&times;</button>
+              <button onClick={closeFormSheet} className="w-8 h-8 flex items-center justify-center rounded-full bg-warm-50 text-text-light text-lg leading-none">&times;</button>
             </div>
             <div>
               <label className="block text-sm text-text-light mb-1.5">日期</label>

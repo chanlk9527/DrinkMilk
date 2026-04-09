@@ -1,8 +1,27 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, type MouseEvent } from 'react'
 import type { AppData, FeedRecord } from '../lib/types'
 import { DEFAULT_QUICK_AMOUNTS, DEFAULT_PRESET_TAGS } from '../lib/types'
 import { getSettings } from '../lib/storage'
 import { generateId, formatTimeSince, formatTime, getTodayStats, assignCaregiverColor, getDaysSinceBirth, formatAge } from '../lib/utils'
+
+// 涟漪效果 hook
+function useRipple() {
+  const createRipple = useCallback((e: MouseEvent<HTMLButtonElement>) => {
+    const btn = e.currentTarget
+    const rect = btn.getBoundingClientRect()
+    const size = Math.max(rect.width, rect.height)
+    const x = e.clientX - rect.left - size / 2
+    const y = e.clientY - rect.top - size / 2
+    const circle = document.createElement('span')
+    circle.className = 'ripple-circle'
+    circle.style.width = circle.style.height = `${size}px`
+    circle.style.left = `${x}px`
+    circle.style.top = `${y}px`
+    btn.appendChild(circle)
+    circle.addEventListener('animationend', () => circle.remove())
+  }, [])
+  return createRipple
+}
 
 interface Props {
   data: AppData | null
@@ -14,7 +33,9 @@ interface Props {
 
 export default function Home({ data, loading, error, onRefresh, onAdd }: Props) {
   const [showCustom, setShowCustom] = useState(false)
+  const [closingCustom, setClosingCustom] = useState(false)
   const [confirmMl, setConfirmMl] = useState<number | null>(null)
+  const [closingConfirm, setClosingConfirm] = useState(false)
   const [customAmount, setCustomAmount] = useState('')
   const [customTime, setCustomTime] = useState('')
   const [saving, setSaving] = useState(false)
@@ -22,6 +43,18 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
   const [customNote, setCustomNote] = useState('')
   const [successMl, setSuccessMl] = useState<number | null>(null)
   const [successFading, setSuccessFading] = useState(false)
+  const createRipple = useRipple()
+
+  // 带动画的关闭函数
+  const closeCustomSheet = useCallback(() => {
+    setClosingCustom(true)
+    setTimeout(() => { setShowCustom(false); setClosingCustom(false) }, 250)
+  }, [])
+
+  const closeConfirmDialog = useCallback(() => {
+    setClosingConfirm(true)
+    setTimeout(() => { resetNotes(); setConfirmMl(null); setClosingConfirm(false) }, 250)
+  }, [])
 
   // 备注标签切换与构建
   const toggleTag = (tag: string) => {
@@ -71,6 +104,7 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
       notes: notes && notes.length > 0 ? notes : undefined,
     })
     setSaving(false)
+    setClosingCustom(false)
     setShowCustom(false)
     setCustomAmount('')
     setCustomTime('')
@@ -160,8 +194,8 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
             <button
               key={ml}
               disabled={saving}
-              onClick={() => { resetNotes(); setConfirmMl(ml) }}
-              className="relative py-3.5 rounded-2xl bg-card border border-warm-100 text-text font-semibold text-lg shadow-sm active:scale-95 active:bg-warm-50 transition-all disabled:opacity-50"
+              onClick={(e) => { createRipple(e); resetNotes(); setConfirmMl(ml) }}
+              className="ripple-btn relative py-3.5 rounded-2xl bg-card border border-warm-100 text-text font-semibold text-lg shadow-sm active:scale-95 active:bg-warm-50 transition-all disabled:opacity-50"
             >
               {ml}
               <span className="block text-[10px] font-normal text-text-light -mt-0.5">ml</span>
@@ -234,12 +268,12 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
 
       {/* 自定义记录弹层 */}
       {showCustom && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowCustom(false)}>
-          <div className="bg-cream w-full max-w-lg rounded-t-3xl p-6 space-y-4 animate-slide-up" onClick={e => e.stopPropagation()}>
+        <div className={`fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm ${closingCustom ? 'animate-backdrop-out' : 'animate-backdrop-in'}`} onClick={closeCustomSheet}>
+          <div className={`bg-cream w-full max-w-lg rounded-t-3xl p-6 space-y-4 ${closingCustom ? 'animate-slide-down' : 'animate-slide-up'}`} onClick={e => e.stopPropagation()}>
             <div className="w-10 h-1 bg-warm-200 rounded-full mx-auto mb-2" />
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-semibold text-text">自定义记录</h2>
-              <button onClick={() => setShowCustom(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-warm-50 text-text-light text-lg leading-none">&times;</button>
+              <button onClick={closeCustomSheet} className="w-8 h-8 flex items-center justify-center rounded-full bg-warm-50 text-text-light text-lg leading-none">&times;</button>
             </div>
             <div>
               <label className="block text-sm text-text-light mb-1.5">奶量 (ml)</label>
@@ -315,8 +349,8 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
 
       {/* 快捷记录确认弹窗 */}
       {confirmMl !== null && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => { resetNotes(); setConfirmMl(null) }}>
-          <div className="bg-card w-80 rounded-3xl p-6 text-center shadow-xl" onClick={e => e.stopPropagation()}>
+        <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm ${closingConfirm ? 'animate-backdrop-out' : 'animate-backdrop-in'}`} onClick={closeConfirmDialog}>
+          <div className={`bg-card w-80 rounded-3xl p-6 text-center shadow-xl ${closingConfirm ? 'animate-success-out' : 'animate-success-in'}`} onClick={e => e.stopPropagation()}>
             <div className="w-16 h-16 rounded-full bg-warm-50 flex items-center justify-center mx-auto mb-3">
               <span className="text-4xl">🍼</span>
             </div>
@@ -359,7 +393,7 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
 
             <div className="flex gap-3">
               <button
-                onClick={() => { resetNotes(); setConfirmMl(null) }}
+                onClick={closeConfirmDialog}
                 className="flex-1 py-3 rounded-xl bg-warm-50 text-text-light font-medium active:bg-warm-100 transition-colors"
               >
                 取消

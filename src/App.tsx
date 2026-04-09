@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import type { AppData, FeedRecord, GrowthRecord } from './lib/types'
-import { getSettings, saveSettings, getCachedData, setCachedData } from './lib/storage'
+import { getSettings, saveSettings, getCachedData, setCachedData, clearAllData } from './lib/storage'
 import { loadData, addRecord, updateRecord, deleteRecord, addGrowthRecord, deleteGrowthRecord } from './lib/google-drive'
 import { assignCaregiverColor } from './lib/utils'
 import { useNightMode } from './lib/night-mode'
@@ -142,6 +142,12 @@ export default function App() {
     setSetupDone(true)
   }
 
+  const handleLeaveFamily = () => {
+    clearAllData()
+    setData(null)
+    setSetupDone(false)
+  }
+
   if (!setupDone) {
     return <Setup onComplete={handleSetupComplete} />
   }
@@ -163,7 +169,7 @@ export default function App() {
             <Growth data={data} onAddGrowth={handleAddGrowth} onDeleteGrowth={handleDeleteGrowth} />
           } />
           <Route path="/settings" element={
-            <Settings data={data} onRefresh={refresh} loading={loading} nightMode={nightMode} />
+            <Settings data={data} onRefresh={refresh} onLeaveFamily={handleLeaveFamily} loading={loading} nightMode={nightMode} />
           } />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

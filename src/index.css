@@ -42,8 +42,8 @@ html.night-mode {
   --color-danger: #D4726B;
 }
 
-/* 全局过渡：让深夜模式切换更平滑 */
-*, *::before, *::after {
+/* 全局过渡：让深夜模式切换更平滑（排除动画元素） */
+*:not([class*="animate-"]):not(.ripple-circle), *::before, *::after {
   transition: background-color 0.6s ease, border-color 0.6s ease, color 0.4s ease;
 }
 
@@ -59,6 +59,56 @@ body {
 }
 .animate-slide-up {
   animation: slide-up 0.3s ease-out;
+}
+
+@keyframes slide-down {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+.animate-slide-down {
+  animation: slide-down 0.25s ease-in forwards;
+}
+
+/* 遮罩层淡入淡出 */
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes backdrop-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+.animate-backdrop-in {
+  animation: backdrop-in 0.2s ease-out;
+}
+.animate-backdrop-out {
+  animation: backdrop-out 0.25s ease-in forwards;
+}
+
+/* 页面切换淡入 */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-page-enter {
+  animation: page-enter 0.25s ease-out;
+}
+
+/* 涟漪效果 */
+.ripple-btn {
+  position: relative;
+  overflow: hidden;
+}
+.ripple-btn .ripple-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 160, 77, 0.3);
+  transform: scale(0);
+  animation: ripple-expand 0.5s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes ripple-expand {
+  to { transform: scale(2.5); opacity: 0; }
 }
 
 /* 记录成功动画 */

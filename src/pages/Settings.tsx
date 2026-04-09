@@ -8,11 +8,12 @@ import { compressImage } from '../lib/image-utils'
 interface Props {
   data: AppData | null
   onRefresh: () => void
+  onLeaveFamily: () => void
   loading: boolean
   nightMode: { isNight: boolean; preference: 'auto' | 'on' | 'off'; cycleMode: () => void }
 }
 
-export default function Settings({ data, onRefresh, loading, nightMode }: Props) {
+export default function Settings({ data, onRefresh, onLeaveFamily, loading, nightMode }: Props) {
   const settings = getSettings()
   const [babyName, setBabyName] = useState(settings.babyName)
   const [myName, setMyName] = useState(settings.myName)
@@ -352,6 +353,21 @@ export default function Settings({ data, onRefresh, loading, nightMode }: Props)
         <p>宝宝喝奶记录 V2</p>
         <p>数据存储于云端，家人共享</p>
         {data && <p>共 {data.records.length} 条记录</p>}
+      </div>
+
+      {/* 退出家庭 */}
+      <div className="bg-card rounded-2xl p-5 shadow-sm">
+        <button
+          onClick={() => {
+            if (confirm('确定要退出当前家庭吗？退出后需要重新创建或加入家庭。云端数据不会被删除。')) {
+              onLeaveFamily()
+            }
+          }}
+          className="w-full py-3 rounded-xl bg-danger/10 text-danger font-medium active:bg-danger/20 transition-colors"
+        >
+          退出当前家庭
+        </button>
+        <p className="text-xs text-text-light mt-2 text-center">退出后本地数据将被清除，云端记录不受影响</p>
       </div>
     </div>
   )

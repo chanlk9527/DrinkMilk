@@ -36,3 +36,8 @@ export function getCachedData(): AppData | null {
 export function setCachedData(data: AppData) {
   localStorage.setItem(CACHE_KEY, JSON.stringify(data))
 }
+
+export function clearAllData() {
+  localStorage.removeItem(SETTINGS_KEY)
+  localStorage.removeItem(CACHE_KEY)
+}
