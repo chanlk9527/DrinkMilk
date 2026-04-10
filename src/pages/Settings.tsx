@@ -131,7 +131,7 @@ export default function Settings({ data, onRefresh, onLeaveFamily, loading, nigh
       <h1 className="text-xl font-bold text-text">设置</h1>
 
       {/* 家庭码 */}
-      <div className="bg-card rounded-2xl p-5 shadow-sm">
+      <div className="glass-card rounded-2xl p-5">
         <p className="text-sm text-text-light mb-2">家庭码（分享给家人加入）</p>
         <div className="flex items-center gap-3">
           <span className="text-2xl font-mono tracking-[0.3em] text-warm-500 font-bold">
@@ -147,7 +147,7 @@ export default function Settings({ data, onRefresh, onLeaveFamily, loading, nigh
       </div>
 
       {/* 个人设置 */}
-      <div className="bg-card rounded-2xl p-5 space-y-4 shadow-sm">
+      <div className="glass-card rounded-2xl p-5 space-y-4">
         {/* 宝宝头像 */}
         <div className="flex flex-col items-center gap-2">
           <div
@@ -226,7 +226,7 @@ export default function Settings({ data, onRefresh, onLeaveFamily, loading, nigh
       </div>
 
       {/* 快捷奶量设置 */}
-      <div className="bg-card rounded-2xl p-5 shadow-sm">
+      <div className="glass-card rounded-2xl p-5">
         <div className="flex items-center justify-between mb-3">
           <div>
             <p className="text-base font-medium text-text">快捷奶量</p>
@@ -311,7 +311,7 @@ export default function Settings({ data, onRefresh, onLeaveFamily, loading, nigh
       </div>
 
       {/* 深夜模式 */}
-      <div className="bg-card rounded-2xl p-5 shadow-sm">
+      <div className="glass-card rounded-2xl p-5">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-base font-medium text-text">🌙 深夜模式</p>
@@ -339,7 +339,7 @@ export default function Settings({ data, onRefresh, onLeaveFamily, loading, nigh
       </div>
 
       {/* 刷新 */}
-      <div className="bg-card rounded-2xl p-5 shadow-sm">
+      <div className="glass-card rounded-2xl p-5">
         <button
           onClick={onRefresh}
           disabled={loading}
@@ -349,14 +349,14 @@ export default function Settings({ data, onRefresh, onLeaveFamily, loading, nigh
         </button>
       </div>
 
-      <div className="bg-card rounded-2xl p-5 shadow-sm text-sm text-text-light space-y-1">
+      <div className="glass-card rounded-2xl p-5 text-sm text-text-light space-y-1">
         <p>宝宝喝奶记录 V2</p>
         <p>数据存储于云端，家人共享</p>
         {data && <p>共 {data.records.length} 条记录</p>}
       </div>
 
       {/* 退出家庭 */}
-      <div className="bg-card rounded-2xl p-5 shadow-sm">
+      <div className="glass-card rounded-2xl p-5">
         <button
           onClick={() => {
             if (confirm('确定要退出当前家庭吗？退出后需要重新创建或加入家庭。云端数据不会被删除。')) {

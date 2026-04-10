@@ -16,6 +16,130 @@
   --color-danger: #E85D5D;
 }
 
+/* 玻璃拟态卡片 */
+.glass-card {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.02) inset;
+}
+
+/* 深夜模式下的玻璃卡片 */
+html.night-mode .glass-card {
+  background: rgba(54, 50, 48, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+/* 玻璃导航栏 */
+.glass-nav {
+  background: rgba(255, 248, 240, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.04);
+}
+
+html.night-mode .glass-nav {
+  background: rgba(44, 40, 37, 0.75);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 玻璃弹层内容区 */
+.glass-sheet {
+  background: rgba(255, 248, 240, 0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+html.night-mode .glass-sheet {
+  background: rgba(44, 40, 37, 0.88);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* 玻璃弹窗 */
+.glass-dialog {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(255, 255, 255, 0.6) inset;
+}
+
+html.night-mode .glass-dialog {
+  background: rgba(54, 50, 48, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(255, 255, 255, 0.05) inset;
+}
+
+/* 玻璃统计小卡片 */
+.glass-stat {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.3) 100%);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-bottom-color: rgba(0, 0, 0, 0.04);
+  border-right-color: rgba(0, 0, 0, 0.03);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.07),
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
+html.night-mode .glass-stat {
+  background: linear-gradient(135deg, rgba(54, 50, 48, 0.55) 0%, rgba(54, 50, 48, 0.35) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom-color: rgba(0, 0, 0, 0.15);
+  border-right-color: rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 6px 20px rgba(0, 0, 0, 0.25),
+    0 2px 6px rgba(0, 0, 0, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+}
+
+/* 玻璃快捷按钮 — 更强立体感 */
+.glass-btn {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.32) 100%);
+  backdrop-filter: blur(16px) saturate(170%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+  border-right-color: rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 1px 0 rgba(255, 255, 255, 0.85) inset;
+}
+.glass-btn:active {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.5) inset;
+}
+
+html.night-mode .glass-btn {
+  background: linear-gradient(145deg, rgba(54, 50, 48, 0.6) 0%, rgba(54, 50, 48, 0.35) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom-color: rgba(0, 0, 0, 0.18);
+  border-right-color: rgba(0, 0, 0, 0.12);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.25),
+    0 2px 4px rgba(0, 0, 0, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+}
+html.night-mode .glass-btn:active {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+}
+
 html, body, #root {
   height: 100%;
   background-color: var(--color-cream);
@@ -23,6 +147,44 @@ html, body, #root {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.6s ease, color 0.6s ease;
+}
+
+/* 背景光斑装饰 — 让玻璃拟态有内容可透 */
+#root::before,
+#root::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.6s ease;
+}
+#root::before {
+  width: 340px;
+  height: 340px;
+  top: -80px;
+  right: -60px;
+  background: radial-gradient(circle, rgba(255, 188, 122, 0.35) 0%, rgba(255, 188, 122, 0) 70%);
+}
+#root::after {
+  width: 300px;
+  height: 300px;
+  bottom: 120px;
+  left: -80px;
+  background: radial-gradient(circle, rgba(255, 160, 77, 0.2) 0%, rgba(255, 160, 77, 0) 70%);
+}
+
+html.night-mode #root::before {
+  background: radial-gradient(circle, rgba(196, 168, 130, 0.12) 0%, rgba(196, 168, 130, 0) 70%);
+}
+html.night-mode #root::after {
+  background: radial-gradient(circle, rgba(155, 132, 112, 0.1) 0%, rgba(155, 132, 112, 0) 70%);
+}
+
+/* 页面内容需要在光斑之上 */
+#root > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* 深夜模式 — 柔和暖色调，不刺眼 */
@@ -129,4 +291,85 @@ body {
 }
 .animate-success-out {
   animation: success-fade-out 0.3s ease-in forwards;
+}
+
+/* 萤火虫呼吸光点 */
+@keyframes firefly-breathe {
+  0%, 100% { opacity: 0; transform: scale(0.6); }
+  15% { opacity: 0.8; transform: scale(1.1); }
+  30% { opacity: 0.1; transform: scale(0.7); }
+  50% { opacity: 0.85; transform: scale(1.15); }
+  65% { opacity: 0.05; transform: scale(0.65); }
+  80% { opacity: 0.6; transform: scale(1); }
+}
+@keyframes firefly-drift-1 {
+  0%   { top: 10%; left: 75%; }
+  8%   { top: 14%; left: 68%; }
+  18%  { top: 22%; left: 72%; }
+  28%  { top: 18%; left: 55%; }
+  38%  { top: 28%; left: 48%; }
+  45%  { top: 22%; left: 52%; }
+  55%  { top: 8%;  left: 58%; }
+  65%  { top: 12%; left: 68%; }
+  75%  { top: 20%; left: 82%; }
+  85%  { top: 15%; left: 78%; }
+  92%  { top: 12%; left: 72%; }
+  100% { top: 10%; left: 75%; }
+}
+@keyframes firefly-drift-2 {
+  0%   { top: 35%; left: 15%; }
+  7%   { top: 30%; left: 22%; }
+  16%  { top: 25%; left: 18%; }
+  25%  { top: 18%; left: 35%; }
+  35%  { top: 22%; left: 48%; }
+  44%  { top: 30%; left: 42%; }
+  52%  { top: 42%; left: 38%; }
+  62%  { top: 48%; left: 28%; }
+  72%  { top: 40%; left: 12%; }
+  82%  { top: 38%; left: 8%;  }
+  91%  { top: 34%; left: 12%; }
+  100% { top: 35%; left: 15%; }
+}
+@keyframes firefly-drift-3 {
+  0%   { top: 60%; left: 80%; }
+  9%   { top: 55%; left: 72%; }
+  18%  { top: 48%; left: 68%; }
+  27%  { top: 44%; left: 58%; }
+  36%  { top: 50%; left: 52%; }
+  45%  { top: 56%; left: 60%; }
+  54%  { top: 65%; left: 55%; }
+  63%  { top: 70%; left: 65%; }
+  72%  { top: 64%; left: 75%; }
+  81%  { top: 58%; left: 85%; }
+  90%  { top: 62%; left: 88%; }
+  100% { top: 60%; left: 80%; }
+}
+@keyframes firefly-drift-4 {
+  0%   { top: 75%; left: 40%; }
+  8%   { top: 70%; left: 48%; }
+  17%  { top: 65%; left: 42%; }
+  26%  { top: 60%; left: 55%; }
+  35%  { top: 58%; left: 65%; }
+  44%  { top: 62%; left: 58%; }
+  53%  { top: 68%; left: 50%; }
+  62%  { top: 74%; left: 35%; }
+  71%  { top: 78%; left: 25%; }
+  80%  { top: 72%; left: 30%; }
+  90%  { top: 76%; left: 38%; }
+  100% { top: 75%; left: 40%; }
+}
+.firefly-dot {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  background: rgba(255, 188, 122, 0.8);
+  box-shadow: 0 0 12px 6px rgba(255, 170, 90, 0.4), 0 0 30px 15px rgba(255, 160, 77, 0.15);
+  animation:
+    firefly-breathe var(--breathe-duration, 4s) ease-in-out infinite var(--delay, 0s),
+    var(--drift-name) var(--drift-duration, 12s) ease-in-out infinite;
+}
+html.night-mode .firefly-dot {
+  background: rgba(220, 190, 150, 0.7);
+  box-shadow: 0 0 12px 6px rgba(210, 180, 140, 0.35), 0 0 30px 15px rgba(190, 160, 120, 0.12);
 }

@@ -116,7 +116,7 @@ export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
       {chartData.length >= 2 && (
         <div className="space-y-4">
           {chartData.some(d => d.体重 != null) && (
-            <div className="bg-card rounded-2xl p-4 shadow-sm">
+            <div className="glass-card rounded-2xl p-4">
               <p className="text-sm font-medium text-text mb-3">体重趋势 (kg)</p>
               <div className="h-44">
                 <ResponsiveContainer width="100%" height="100%">
@@ -132,7 +132,7 @@ export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
             </div>
           )}
           {chartData.some(d => d.身高 != null) && (
-            <div className="bg-card rounded-2xl p-4 shadow-sm">
+            <div className="glass-card rounded-2xl p-4">
               <p className="text-sm font-medium text-text mb-3">身高趋势 (cm)</p>
               <div className="h-44">
                 <ResponsiveContainer width="100%" height="100%">
@@ -156,7 +156,7 @@ export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
           <p className="text-sm font-medium text-text-light mb-2.5">历史记录</p>
           <div className="space-y-2">
             {[...records].reverse().map(r => (
-              <div key={r.id} className="bg-card rounded-xl px-4 py-3 shadow-sm">
+              <div key={r.id} className="glass-card rounded-xl px-4 py-3">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <p className="text-sm text-text-light mb-1">{r.date}</p>
@@ -193,7 +193,7 @@ export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
       {/* 新增记录弹层 */}
       {showForm && (
         <div className={`fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm ${closingForm ? 'animate-backdrop-out' : 'animate-backdrop-in'}`} onClick={closeFormSheet}>
-          <div className={`bg-cream w-full max-w-lg rounded-t-3xl p-6 space-y-4 ${closingForm ? 'animate-slide-down' : 'animate-slide-up'}`} onClick={e => e.stopPropagation()}>
+          <div className={`glass-sheet w-full max-w-lg rounded-t-3xl p-6 space-y-4 ${closingForm ? 'animate-slide-down' : 'animate-slide-up'}`} onClick={e => e.stopPropagation()}>
             <div className="w-10 h-1 bg-warm-200 rounded-full mx-auto mb-2" />
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-semibold text-text">记录成长数据</h2>

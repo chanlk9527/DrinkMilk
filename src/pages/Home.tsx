@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, type MouseEvent } from 'react'
+import { useState, useEffect, useCallback, useRef, type MouseEvent, type TouchEvent as ReactTouchEvent } from 'react'
 import type { AppData, FeedRecord } from '../lib/types'
 import { DEFAULT_QUICK_AMOUNTS, DEFAULT_PRESET_TAGS } from '../lib/types'
 import { getSettings } from '../lib/storage'
-import { generateId, formatTimeSince, formatTime, getTodayStats, assignCaregiverColor, getDaysSinceBirth, formatAge } from '../lib/utils'
+import { generateId, formatTimeSince, formatTime, getTodayStats, assignCaregiverColor, getDaysSinceBirth, formatAge, getCaregiverIcon } from '../lib/utils'
 
 // 涟漪效果 hook
 function useRipple() {
@@ -25,13 +25,13 @@ function useRipple() {
 
 interface Props {
   data: AppData | null
-  loading: boolean
+  loading?: boolean
   error: string
   onRefresh: () => void
   onAdd: (record: FeedRecord) => Promise<void>
 }
 
-export default function Home({ data, loading, error, onRefresh, onAdd }: Props) {
+export default function Home({ data, error, onRefresh, onAdd }: Props) {
   const [showCustom, setShowCustom] = useState(false)
   const [closingCustom, setClosingCustom] = useState(false)
   const [confirmMl, setConfirmMl] = useState<number | null>(null)
@@ -44,6 +44,39 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
   const [successMl, setSuccessMl] = useState<number | null>(null)
   const [successFading, setSuccessFading] = useState(false)
   const createRipple = useRipple()
+
+  // 下拉刷新
+  const pullRef = useRef<{ startY: number; pulling: boolean }>({ startY: 0, pulling: false })
+  const [pullDistance, setPullDistance] = useState(0)
+  const [refreshing, setRefreshing] = useState(false)
+  const PULL_THRESHOLD = 80
+
+  const onTouchStart = useCallback((e: ReactTouchEvent) => {
+    // 只在页面滚动到顶部时启用下拉
+    const scrollEl = (e.currentTarget as HTMLElement).closest('.overflow-y-auto')
+    if (scrollEl && scrollEl.scrollTop > 0) return
+    pullRef.current = { startY: e.touches[0].clientY, pulling: true }
+  }, [])
+
+  const onTouchMove = useCallback((e: ReactTouchEvent) => {
+    if (!pullRef.current.pulling) return
+    const dy = e.touches[0].clientY - pullRef.current.startY
+    if (dy > 0) {
+      setPullDistance(Math.min(dy * 0.5, 120))
+    }
+  }, [])
+
+  const onTouchEnd = useCallback(async () => {
+    if (!pullRef.current.pulling) return
+    pullRef.current.pulling = false
+    if (pullDistance >= PULL_THRESHOLD) {
+      setRefreshing(true)
+      setPullDistance(PULL_THRESHOLD * 0.6)
+      await onRefresh()
+      setRefreshing(false)
+    }
+    setPullDistance(0)
+  }, [pullDistance, onRefresh])
 
   // 带动画的关闭函数
   const closeCustomSheet = useCallback(() => {
@@ -118,7 +151,25 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
   }
 
   return (
-    <div className="px-5 pt-6 pb-4 space-y-5 max-w-lg mx-auto">
+    <div
+      className="px-5 pt-6 pb-4 space-y-5 max-w-lg mx-auto"
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      style={{ transform: pullDistance > 0 ? `translateY(${pullDistance}px)` : undefined, transition: pullRef.current.pulling ? 'none' : 'transform 0.3s ease' }}
+    >
+      {/* 下拉刷新指示器 */}
+      <div
+        className="fixed top-0 left-0 right-0 flex justify-center z-40 pointer-events-none"
+        style={{ opacity: pullDistance > 10 ? Math.min(pullDistance / PULL_THRESHOLD, 1) : 0, transition: pullRef.current.pulling ? 'none' : 'opacity 0.3s ease' }}
+      >
+        <div className="mt-2 bg-card/90 backdrop-blur-sm rounded-full px-4 py-1.5 shadow-md flex items-center gap-2">
+          <span className={`text-base ${refreshing ? 'animate-spin' : ''}`} style={{ display: 'inline-block' }}>
+            {refreshing ? '⏳' : pullDistance >= PULL_THRESHOLD ? '↑ 松开刷新' : '↓ 下拉刷新'}
+          </span>
+          {refreshing && <span className="text-xs text-text-light">同步中...</span>}
+        </div>
+      </div>
       {/* 宝宝年龄 */}
       {(data?.birthDate || settings.babyAvatar) && (
         <div className="flex items-center gap-3 px-1">
@@ -165,7 +216,7 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
                 className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-white"
                 style={{ backgroundColor: data?.colorMap?.[lastRecord.by] ?? '#9CA3AF' }}
               >
-                👤 {lastRecord.by}
+                {getCaregiverIcon(lastRecord.by)} {lastRecord.by}
               </span>
             </div>
           )}
@@ -174,11 +225,11 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
 
       {/* 今日统计 */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="bg-card rounded-2xl p-4 shadow-sm text-center">
+        <div className="glass-stat rounded-2xl p-4 text-center">
           <p className="text-3xl font-bold text-warm-500">{todayStats.count}</p>
           <p className="text-xs text-text-light mt-1">今日次数</p>
         </div>
-        <div className="bg-card rounded-2xl p-4 shadow-sm text-center">
+        <div className="glass-stat rounded-2xl p-4 text-center">
           <p className="text-3xl font-bold text-warm-500">
             {todayStats.totalMl}<span className="text-base font-normal text-text-light">ml</span>
           </p>
@@ -195,7 +246,7 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
               key={ml}
               disabled={saving}
               onClick={(e) => { createRipple(e); resetNotes(); setConfirmMl(ml) }}
-              className="ripple-btn relative py-3.5 rounded-2xl bg-card border border-warm-100 text-text font-semibold text-lg shadow-sm active:scale-95 active:bg-warm-50 transition-all disabled:opacity-50"
+              className="ripple-btn relative py-3.5 rounded-2xl glass-btn text-text font-semibold text-lg active:scale-95 transition-all disabled:opacity-50"
             >
               {ml}
               <span className="block text-[10px] font-normal text-text-light -mt-0.5">ml</span>
@@ -220,15 +271,6 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
         </div>
       )}
 
-      {/* 刷新 */}
-      <button
-        onClick={onRefresh}
-        disabled={loading}
-        className="w-full py-2 text-sm text-text-light active:text-warm-500 transition-colors disabled:opacity-50"
-      >
-        {loading ? '同步中...' : '↻ 刷新数据'}
-      </button>
-
       {/* 最近记录 - 时间线风格 */}
       {recentRecords.length > 0 && (
         <div>
@@ -243,7 +285,7 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
                   <div className={`absolute -left-6 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 ${
                     i === 0 ? 'bg-warm-400 border-warm-400 shadow-sm' : 'bg-card border-warm-200'
                   }`} />
-                  <div className="bg-card rounded-xl px-4 py-3 shadow-sm">
+                  <div className="glass-card rounded-xl px-4 py-3">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-2">
                         <span className="text-text font-semibold">{r.amountMl}<span className="text-sm font-normal text-text-light">ml</span></span>
@@ -269,7 +311,7 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
       {/* 自定义记录弹层 */}
       {showCustom && (
         <div className={`fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm ${closingCustom ? 'animate-backdrop-out' : 'animate-backdrop-in'}`} onClick={closeCustomSheet}>
-          <div className={`bg-cream w-full max-w-lg rounded-t-3xl p-6 space-y-4 ${closingCustom ? 'animate-slide-down' : 'animate-slide-up'}`} onClick={e => e.stopPropagation()}>
+          <div className={`glass-sheet w-full max-w-lg rounded-t-3xl p-6 space-y-4 ${closingCustom ? 'animate-slide-down' : 'animate-slide-up'}`} onClick={e => e.stopPropagation()}>
             <div className="w-10 h-1 bg-warm-200 rounded-full mx-auto mb-2" />
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-semibold text-text">自定义记录</h2>
@@ -350,7 +392,7 @@ export default function Home({ data, loading, error, onRefresh, onAdd }: Props) 
       {/* 快捷记录确认弹窗 */}
       {confirmMl !== null && (
         <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm ${closingConfirm ? 'animate-backdrop-out' : 'animate-backdrop-in'}`} onClick={closeConfirmDialog}>
-          <div className={`bg-card w-80 rounded-3xl p-6 text-center shadow-xl ${closingConfirm ? 'animate-success-out' : 'animate-success-in'}`} onClick={e => e.stopPropagation()}>
+          <div className={`glass-dialog w-80 rounded-3xl p-6 text-center ${closingConfirm ? 'animate-success-out' : 'animate-success-in'}`} onClick={e => e.stopPropagation()}>
             <div className="w-16 h-16 rounded-full bg-warm-50 flex items-center justify-center mx-auto mb-3">
               <span className="text-4xl">🍼</span>
             </div>

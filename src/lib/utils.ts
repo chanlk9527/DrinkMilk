@@ -13,6 +13,17 @@ export function formatTimeSince(isoStr: string): string {
   return `${h} 小时 ${m} 分`
 }
 
+export function formatInterval(laterIso: string, earlierIso: string): string {
+  const diff = new Date(laterIso).getTime() - new Date(earlierIso).getTime()
+  const mins = Math.round(Math.abs(diff) / 60000)
+  if (mins < 1) return '< 1 分钟'
+  const h = Math.floor(mins / 60)
+  const m = mins % 60
+  if (h === 0) return `${m} 分钟`
+  if (m === 0) return `${h} 小时`
+  return `${h} 小时 ${m} 分`
+}
+
 export function formatTime(isoStr: string): string {
   const d = new Date(isoStr)
   return d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false })
@@ -40,17 +51,36 @@ export function getTodayStats(records: { at: string; amountMl: number }[]) {
 }
 
 export const CAREGIVER_COLORS: Record<string, string> = {
-  '妈妈': '#F472B6',
-  '爸爸': '#60A5FA',
+  '妈妈': '#E8A0BF',
+  '爸爸': '#7BA7CC',
+}
+
+const CAREGIVER_ICONS: Record<string, string> = {
+  '妈妈': '👩',
+  '爸爸': '👨',
+  '爷爷': '👴',
+  '奶奶': '👵',
+  '外公': '👴',
+  '外婆': '👵',
+  '姥姥': '👵',
+  '姥爷': '👴',
+  '阿姨': '👩',
+  '叔叔': '👨',
+  '姑姑': '👩',
+  '舅舅': '👨',
+}
+
+export function getCaregiverIcon(name: string): string {
+  return CAREGIVER_ICONS[name] ?? '🧑'
 }
 
 export const COLOR_PALETTE = [
-  '#34D399', // 绿色
-  '#FBBF24', // 黄色
-  '#A78BFA', // 紫色
-  '#FB923C', // 橙色
-  '#2DD4BF', // 青色
-  '#F87171', // 红色
+  '#7BC4A8', // 绿色
+  '#D4B876', // 黄色
+  '#A89BC7', // 紫色
+  '#D4956B', // 橙色
+  '#6DBAB0', // 青色
+  '#C98A8A', // 红色
 ]
 
 export function assignCaregiverColor(

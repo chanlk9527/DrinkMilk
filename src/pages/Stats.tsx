@@ -41,7 +41,7 @@ export default function Stats({ data }: Props) {
       <h1 className="text-xl font-bold text-text">数据统计</h1>
 
       {/* 奶量趋势 */}
-      <div className="bg-card rounded-2xl p-4 shadow-sm">
+      <div className="glass-card rounded-2xl p-4">
         <div className="flex items-center justify-between mb-4">
           <p className="text-base font-medium text-text">奶量趋势</p>
           <div className="flex bg-warm-50 rounded-lg p-0.5">
@@ -143,7 +143,7 @@ export default function Stats({ data }: Props) {
       </div>
 
       {/* 单次奶量变化趋势 */}
-      <div className="bg-card rounded-2xl p-4 shadow-sm">
+      <div className="glass-card rounded-2xl p-4">
         <p className="text-base font-medium text-text mb-4">单次奶量变化</p>
 
         {perFeedingData.length > 0 ? (
@@ -212,7 +212,7 @@ export default function Stats({ data }: Props) {
       </div>
 
       {/* 喂奶间隔分布 */}
-      <div className="bg-card rounded-2xl p-4 shadow-sm">
+      <div className="glass-card rounded-2xl p-4">
         <p className="text-base font-medium text-text mb-4">喂奶间隔分布</p>
 
         {intervalData.some(d => d.count > 0) ? (
@@ -265,7 +265,7 @@ export default function Stats({ data }: Props) {
 
 function SummaryCard({ label, value, unit }: { label: string; value: string; unit: string }) {
   return (
-    <div className="bg-warm-50 rounded-xl p-2.5 text-center">
+    <div className="glass-stat rounded-xl p-2.5 text-center">
       <p className="text-lg font-bold text-warm-500">
         {value}<span className="text-xs font-normal text-text-light ml-0.5">{unit}</span>
       </p>
