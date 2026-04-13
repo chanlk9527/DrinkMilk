@@ -167,7 +167,7 @@ export default function History({ data, onUpdate, onDelete }: Props) {
                               <button
                                 onClick={() => saveEdit(r)}
                                 disabled={saving || !editAmount}
-                                className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-warm-400 to-warm-500 text-white text-sm font-medium disabled:opacity-40 active:scale-95 transition-all"
+                                className="flex-1 py-2.5 rounded-xl btn-primary text-white text-sm font-medium disabled:opacity-40 active:scale-95 transition-all"
                               >
                                 保存
                               </button>

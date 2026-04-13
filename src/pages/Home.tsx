@@ -190,26 +190,24 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
         </div>
       )}
 
-      {/* 主状态卡片 - 渐变背景 */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-warm-400 to-warm-500 p-6 shadow-lg">
-        <div className="absolute top-[-20px] right-[-20px] w-32 h-32 rounded-full bg-white/10" />
-        <div className="absolute bottom-[-30px] left-[-10px] w-24 h-24 rounded-full bg-white/5" />
+      {/* 主状态卡片 - 液态玻璃 */}
+      <div className="relative overflow-hidden rounded-3xl glass-hero p-6">
         <div className="relative z-10">
           {!data?.birthDate && settings.babyAvatar && (
-            <div className="w-14 h-14 rounded-full border-2 border-white/40 overflow-hidden mx-auto mb-2 shadow">
+            <div className="w-14 h-14 rounded-full border-2 border-warm-200 overflow-hidden mx-auto mb-2">
               <img src={settings.babyAvatar} alt="" className="w-full h-full object-cover" />
             </div>
           )}
-          <p className="text-white/80 text-sm text-center mb-1">距离上次喝奶</p>
-          <p className="text-5xl font-extrabold text-white text-center tracking-tight mb-4">
+          <p className="text-text-light text-sm text-center mb-1">距离上次喝奶</p>
+          <p className="text-5xl font-extrabold text-text text-center tracking-tight mb-4">
             {lastRecord ? formatTimeSince(lastRecord.at) : '--'}
           </p>
           {lastRecord && (
             <div className="flex justify-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1.5 text-sm text-white">
+              <span className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-text-light" style={{ background: 'rgba(255,255,255,0.35)', border: '1px solid rgba(255,255,255,0.5)' }}>
                 🕐 {formatTime(lastRecord.at)}
               </span>
-              <span className="inline-flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1.5 text-sm text-white">
+              <span className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-warm-500 font-medium" style={{ background: 'rgba(255,255,255,0.35)', border: '1px solid rgba(255,255,255,0.5)' }}>
                 🍼 {lastRecord.amountMl}ml
               </span>
               <span
@@ -226,14 +224,14 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
       {/* 今日统计 */}
       <div className="grid grid-cols-2 gap-3">
         <div className="glass-stat rounded-2xl p-4 text-center">
-          <p className="text-3xl font-bold text-warm-500">{todayStats.count}</p>
-          <p className="text-xs text-text-light mt-1">今日次数</p>
+          <p className="text-3xl font-bold text-warm-500 relative z-10">{todayStats.count}</p>
+          <p className="text-xs text-text-light mt-1 relative z-10">今日次数</p>
         </div>
         <div className="glass-stat rounded-2xl p-4 text-center">
-          <p className="text-3xl font-bold text-warm-500">
+          <p className="text-3xl font-bold text-warm-500 relative z-10">
             {todayStats.totalMl}<span className="text-base font-normal text-text-light">ml</span>
           </p>
-          <p className="text-xs text-text-light mt-1">今日总量</p>
+          <p className="text-xs text-text-light mt-1 relative z-10">今日总量</p>
         </div>
       </div>
 
@@ -248,8 +246,8 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
               onClick={(e) => { createRipple(e); resetNotes(); setConfirmMl(ml) }}
               className="ripple-btn relative py-3.5 rounded-2xl glass-btn text-text font-semibold text-lg active:scale-95 transition-all disabled:opacity-50"
             >
-              {ml}
-              <span className="block text-[10px] font-normal text-text-light -mt-0.5">ml</span>
+              <span className="relative z-10">{ml}</span>
+              <span className="block text-[10px] font-normal text-text-light -mt-0.5 relative z-10">ml</span>
             </button>
           ))}
         </div>
@@ -258,7 +256,7 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
       {/* 自定义记录按钮 */}
       <button
         onClick={() => { setShowCustom(true); setCustomTime(new Date().toTimeString().slice(0, 5)) }}
-        className="w-full py-4 rounded-2xl bg-gradient-to-r from-warm-400 to-warm-500 text-white text-lg font-semibold shadow-md active:scale-[0.98] transition-transform"
+        className="w-full py-4 rounded-2xl btn-primary text-white text-lg font-semibold active:scale-[0.98] transition-transform"
       >
         ✏️ 自定义记录
       </button>
@@ -310,7 +308,7 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
 
       {/* 自定义记录弹层 */}
       {showCustom && (
-        <div className={`fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm ${closingCustom ? 'animate-backdrop-out' : 'animate-backdrop-in'}`} onClick={closeCustomSheet}>
+        <div className={`fixed inset-0 z-50 flex items-end justify-center bg-black/30 backdrop-blur-sm ${closingCustom ? 'animate-backdrop-out' : 'animate-backdrop-in'}`} onClick={closeCustomSheet}>
           <div className={`glass-sheet w-full max-w-lg rounded-t-3xl p-6 space-y-4 ${closingCustom ? 'animate-slide-down' : 'animate-slide-up'}`} onClick={e => e.stopPropagation()}>
             <div className="w-10 h-1 bg-warm-200 rounded-full mx-auto mb-2" />
             <div className="flex justify-between items-center">
@@ -381,7 +379,7 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
                 now.setHours(h, m, 0, 0)
                 handleAdd(Number(customAmount), now.toISOString(), buildNotes())
               }}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-warm-400 to-warm-500 text-white text-lg font-semibold disabled:opacity-40 active:scale-[0.98] transition-all"
+              className="w-full py-4 rounded-2xl btn-primary text-white text-lg font-semibold disabled:opacity-40 active:scale-[0.98] transition-all"
             >
               保存
             </button>
@@ -391,7 +389,7 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
 
       {/* 快捷记录确认弹窗 */}
       {confirmMl !== null && (
-        <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm ${closingConfirm ? 'animate-backdrop-out' : 'animate-backdrop-in'}`} onClick={closeConfirmDialog}>
+        <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm ${closingConfirm ? 'animate-backdrop-out' : 'animate-backdrop-in'}`} onClick={closeConfirmDialog}>
           <div className={`glass-dialog w-80 rounded-3xl p-6 text-center ${closingConfirm ? 'animate-success-out' : 'animate-success-in'}`} onClick={e => e.stopPropagation()}>
             <div className="w-16 h-16 rounded-full bg-warm-50 flex items-center justify-center mx-auto mb-3">
               <span className="text-4xl">🍼</span>
@@ -443,7 +441,7 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
               <button
                 disabled={saving}
                 onClick={() => { handleAdd(confirmMl, undefined, buildNotes()); setConfirmMl(null) }}
-                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-warm-400 to-warm-500 text-white font-medium disabled:opacity-50 active:scale-95 transition-all"
+                className="flex-1 py-3 rounded-xl btn-primary text-white font-medium disabled:opacity-50 active:scale-95 transition-all"
               >
                 {saving ? '保存中...' : '确认'}
               </button>
@@ -456,7 +454,7 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
       {successMl !== null && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none">
           <div className={`flex flex-col items-center gap-3 ${successFading ? 'animate-success-out' : 'animate-success-in'}`}>
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-warm-400 to-warm-500 flex items-center justify-center shadow-lg">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-warm-400 to-warm-500 flex items-center justify-center shadow-sm">
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
                 <path
                   d="M10 20 L17 27 L30 13"

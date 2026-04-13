@@ -78,7 +78,7 @@ export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
         <h1 className="text-xl font-bold text-text">成长记录</h1>
         <button
           onClick={() => setShowForm(true)}
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-warm-400 to-warm-500 text-white text-sm font-medium active:scale-95 transition-transform"
+          className="px-4 py-2 rounded-xl btn-primary text-white text-sm font-medium active:scale-95 transition-transform"
         >
           + 记录
         </button>
@@ -86,26 +86,25 @@ export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
 
       {/* 最新数据卡片 */}
       {latestRecord && (
-        <div className="bg-gradient-to-br from-warm-400 to-warm-500 rounded-3xl p-5 shadow-lg relative overflow-hidden">
-          <div className="absolute top-[-20px] right-[-20px] w-28 h-28 rounded-full bg-white/10" />
-          <p className="text-white/80 text-sm mb-2">最新记录 · {latestRecord.date}</p>
+        <div className="glass-hero-growth rounded-3xl p-5 relative overflow-hidden">
+          <p className="text-text-light text-sm mb-2">最新记录 · {latestRecord.date}</p>
           <div className="flex gap-4">
             {latestRecord.weightKg != null && (
               <div>
-                <p className="text-3xl font-extrabold text-white">{latestRecord.weightKg}<span className="text-base font-normal"> kg</span></p>
-                <p className="text-white/70 text-xs">体重</p>
+                <p className="text-3xl font-extrabold text-text">{latestRecord.weightKg}<span className="text-base font-normal text-text-light"> kg</span></p>
+                <p className="text-text-light text-xs">体重</p>
               </div>
             )}
             {latestRecord.heightCm != null && (
               <div>
-                <p className="text-3xl font-extrabold text-white">{latestRecord.heightCm}<span className="text-base font-normal"> cm</span></p>
-                <p className="text-white/70 text-xs">身高</p>
+                <p className="text-3xl font-extrabold text-text">{latestRecord.heightCm}<span className="text-base font-normal text-text-light"> cm</span></p>
+                <p className="text-text-light text-xs">身高</p>
               </div>
             )}
             {latestRecord.headCm != null && (
               <div>
-                <p className="text-3xl font-extrabold text-white">{latestRecord.headCm}<span className="text-base font-normal"> cm</span></p>
-                <p className="text-white/70 text-xs">头围</p>
+                <p className="text-3xl font-extrabold text-text">{latestRecord.headCm}<span className="text-base font-normal text-text-light"> cm</span></p>
+                <p className="text-text-light text-xs">头围</p>
               </div>
             )}
           </div>
@@ -121,11 +120,11 @@ export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
               <div className="h-44">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chartData.filter(d => d.体重 != null)} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#FFE8D0" />
-                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#8B7355' }} tickLine={false} axisLine={{ stroke: '#FFE8D0' }} />
-                    <YAxis tick={{ fontSize: 11, fill: '#8B7355' }} tickLine={false} axisLine={false} unit="kg" domain={['dataMin - 0.5', 'dataMax + 0.5']} />
-                    <Tooltip contentStyle={{ background: '#FFF8F0', border: '1px solid #FFE8D0', borderRadius: 12, fontSize: 13 }} />
-                    <Line type="monotone" dataKey="体重" stroke="#FFA04D" strokeWidth={2.5} dot={{ fill: '#FFA04D', r: 4 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E4DDD3" />
+                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#8C7E6E' }} tickLine={false} axisLine={{ stroke: '#E4DDD3' }} />
+                    <YAxis tick={{ fontSize: 11, fill: '#8C7E6E' }} tickLine={false} axisLine={false} unit="kg" domain={['dataMin - 0.5', 'dataMax + 0.5']} />
+                    <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.6)', borderRadius: 12, fontSize: 13, boxShadow: '0 8px 32px rgba(0,0,0,0.04)' }} />
+                    <Line type="monotone" dataKey="体重" stroke="#B8956E" strokeWidth={2.5} dot={{ fill: '#B8956E', r: 4 }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -137,10 +136,10 @@ export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
               <div className="h-44">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chartData.filter(d => d.身高 != null)} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#FFE8D0" />
-                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#8B7355' }} tickLine={false} axisLine={{ stroke: '#FFE8D0' }} />
-                    <YAxis tick={{ fontSize: 11, fill: '#8B7355' }} tickLine={false} axisLine={false} unit="cm" domain={['dataMin - 1', 'dataMax + 1']} />
-                    <Tooltip contentStyle={{ background: '#FFF8F0', border: '1px solid #FFE8D0', borderRadius: 12, fontSize: 13 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E4DDD3" />
+                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#8C7E6E' }} tickLine={false} axisLine={{ stroke: '#E4DDD3' }} />
+                    <YAxis tick={{ fontSize: 11, fill: '#8C7E6E' }} tickLine={false} axisLine={false} unit="cm" domain={['dataMin - 1', 'dataMax + 1']} />
+                    <Tooltip contentStyle={{ background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.6)', borderRadius: 12, fontSize: 13, boxShadow: '0 8px 32px rgba(0,0,0,0.04)' }} />
                     <Line type="monotone" dataKey="身高" stroke="#60A5FA" strokeWidth={2.5} dot={{ fill: '#60A5FA', r: 4 }} />
                   </LineChart>
                 </ResponsiveContainer>
@@ -227,7 +226,7 @@ export default function Growth({ data, onAddGrowth, onDeleteGrowth }: Props) {
                 className="w-full px-4 py-3 rounded-xl bg-card border border-warm-100 text-text text-sm focus:outline-none focus:border-warm-400 focus:ring-2 focus:ring-warm-400/20 transition-all" />
             </div>
             <button disabled={saving || (!weightKg && !heightCm && !headCm)} onClick={handleSubmit}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-warm-400 to-warm-500 text-white text-lg font-semibold disabled:opacity-40 active:scale-[0.98] transition-all">
+              className="w-full py-4 rounded-2xl btn-primary text-white text-lg font-semibold disabled:opacity-40 active:scale-[0.98] transition-all">
               {saving ? '保存中...' : '保存'}
             </button>
           </div>

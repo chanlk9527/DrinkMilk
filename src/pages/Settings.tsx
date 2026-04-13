@@ -219,7 +219,7 @@ export default function Settings({ data, onRefresh, onLeaveFamily, loading, nigh
         </div>
         <button
           onClick={handleSave}
-          className="w-full py-3 rounded-xl bg-gradient-to-r from-warm-400 to-warm-500 text-white font-medium active:scale-[0.98] transition-all"
+          className="w-full py-3 rounded-xl btn-primary text-white font-medium active:scale-[0.98] transition-all"
         >
           {saved ? '✓ 已保存' : '保存设置'}
         </button>
@@ -289,7 +289,7 @@ export default function Settings({ data, onRefresh, onLeaveFamily, loading, nigh
               <button
                 onClick={handleSaveAmounts}
                 disabled={savingAmounts || amounts.length === 0}
-                className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-warm-400 to-warm-500 text-white text-sm font-medium disabled:opacity-40 active:scale-[0.98] transition-all"
+                className="flex-1 py-2.5 rounded-xl btn-primary text-white text-sm font-medium disabled:opacity-40 active:scale-[0.98] transition-all"
               >
                 {savingAmounts ? '保存中...' : amountsSaved ? '✓ 已保存' : '保存奶量设置'}
               </button>

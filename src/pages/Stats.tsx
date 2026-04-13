@@ -51,7 +51,7 @@ export default function Stats({ data }: Props) {
                 onClick={() => setRange(r)}
                 className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${
                   range === r
-                    ? 'bg-warm-400 text-white shadow-sm'
+                    ? 'bg-warm-400 text-white'
                     : 'text-text-light'
                 }`}
               >
@@ -65,26 +65,28 @@ export default function Stats({ data }: Props) {
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#FFE8D0" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E4DDD3" />
                 <XAxis
                   dataKey="label"
-                  tick={{ fontSize: 11, fill: '#8B7355' }}
+                  tick={{ fontSize: 11, fill: '#8C7E6E' }}
                   tickLine={false}
-                  axisLine={{ stroke: '#FFE8D0' }}
+                  axisLine={{ stroke: '#E4DDD3' }}
                   interval="preserveStartEnd"
                 />
                 <YAxis
-                  tick={{ fontSize: 11, fill: '#8B7355' }}
+                  tick={{ fontSize: 11, fill: '#8C7E6E' }}
                   tickLine={false}
                   axisLine={false}
                   unit="ml"
                 />
                 <Tooltip
                   contentStyle={{
-                    background: '#FFF8F0',
-                    border: '1px solid #FFE8D0',
+                    background: 'rgba(255,255,255,0.75)',
+                    backdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(255,255,255,0.6)',
                     borderRadius: 12,
                     fontSize: 13,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.04)',
                   }}
                   formatter={(value, name) => {
                     const labels: Record<string, string> = { totalMl: '总奶量', avgMl: '平均单次', count: '次数' }
@@ -94,24 +96,24 @@ export default function Stats({ data }: Props) {
                 <Legend
                   formatter={(value: string) => {
                     const labels: Record<string, string> = { totalMl: '总奶量', avgMl: '平均单次' }
-                    return <span style={{ fontSize: 12, color: '#8B7355' }}>{labels[value] || value}</span>
+                    return <span style={{ fontSize: 12, color: '#8C7E6E' }}>{labels[value] || value}</span>
                   }}
                 />
                 <Line
                   type="monotone"
                   dataKey="totalMl"
-                  stroke="#FFA04D"
+                  stroke="#B8956E"
                   strokeWidth={2.5}
-                  dot={{ r: 3, fill: '#FFA04D' }}
+                  dot={{ r: 3, fill: '#B8956E' }}
                   activeDot={{ r: 5 }}
                 />
                 <Line
                   type="monotone"
                   dataKey="avgMl"
-                  stroke="#E8863A"
+                  stroke="#A07850"
                   strokeWidth={2}
                   strokeDasharray="5 5"
-                  dot={{ r: 2.5, fill: '#E8863A' }}
+                  dot={{ r: 2.5, fill: '#A07850' }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -151,26 +153,28 @@ export default function Stats({ data }: Props) {
             <div className="h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={perFeedingData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#FFE8D0" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E4DDD3" />
                   <XAxis
                     dataKey="label"
-                    tick={{ fontSize: 11, fill: '#8B7355' }}
+                    tick={{ fontSize: 11, fill: '#8C7E6E' }}
                     tickLine={false}
-                    axisLine={{ stroke: '#FFE8D0' }}
+                    axisLine={{ stroke: '#E4DDD3' }}
                     interval="preserveStartEnd"
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: '#8B7355' }}
+                    tick={{ fontSize: 11, fill: '#8C7E6E' }}
                     tickLine={false}
                     axisLine={false}
                     unit="ml"
                   />
                   <Tooltip
                     contentStyle={{
-                      background: '#FFF8F0',
-                      border: '1px solid #FFE8D0',
+                      background: 'rgba(255,255,255,0.75)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(255,255,255,0.6)',
                       borderRadius: 12,
                       fontSize: 13,
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.04)',
                     }}
                     formatter={(value, name) => {
                       const labels: Record<string, string> = { amountMl: '单次奶量', movingAvg: '趋势均线' }
@@ -180,21 +184,21 @@ export default function Stats({ data }: Props) {
                   <Legend
                     formatter={(value: string) => {
                       const labels: Record<string, string> = { amountMl: '单次奶量', movingAvg: '趋势均线' }
-                      return <span style={{ fontSize: 12, color: '#8B7355' }}>{labels[value] || value}</span>
+                      return <span style={{ fontSize: 12, color: '#8C7E6E' }}>{labels[value] || value}</span>
                     }}
                   />
                   <Line
                     type="monotone"
                     dataKey="amountMl"
-                    stroke="#FFA04D"
+                    stroke="#B8956E"
                     strokeWidth={1.5}
-                    dot={{ r: 2.5, fill: '#FFA04D' }}
+                    dot={{ r: 2.5, fill: '#B8956E' }}
                     activeDot={{ r: 5 }}
                   />
                   <Line
                     type="monotone"
                     dataKey="movingAvg"
-                    stroke="#E8863A"
+                    stroke="#A07850"
                     strokeWidth={2.5}
                     dot={false}
                     connectNulls={false}
@@ -220,31 +224,33 @@ export default function Stats({ data }: Props) {
             <div className="h-52">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={intervalData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#FFE8D0" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E4DDD3" vertical={false} />
                   <XAxis
                     dataKey="range"
-                    tick={{ fontSize: 11, fill: '#8B7355' }}
+                    tick={{ fontSize: 11, fill: '#8C7E6E' }}
                     tickLine={false}
-                    axisLine={{ stroke: '#FFE8D0' }}
+                    axisLine={{ stroke: '#E4DDD3' }}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: '#8B7355' }}
+                    tick={{ fontSize: 11, fill: '#8C7E6E' }}
                     tickLine={false}
                     axisLine={false}
                     allowDecimals={false}
                   />
                   <Tooltip
                     contentStyle={{
-                      background: '#FFF8F0',
-                      border: '1px solid #FFE8D0',
+                      background: 'rgba(255,255,255,0.75)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(255,255,255,0.6)',
                       borderRadius: 12,
                       fontSize: 13,
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.04)',
                     }}
                     formatter={(value) => [`${value} 次`, '频次']}
                   />
                   <Bar
                     dataKey="count"
-                    fill="#FFA04D"
+                    fill="#B8956E"
                     radius={[6, 6, 0, 0]}
                     maxBarSize={40}
                   />
