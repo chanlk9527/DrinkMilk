@@ -190,26 +190,24 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
         </div>
       )}
 
-      {/* 主状态卡片 - 渐变背景 */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-warm-400 to-warm-500 p-6 shadow-lg">
-        <div className="absolute top-[-20px] right-[-20px] w-32 h-32 rounded-full bg-white/10" />
-        <div className="absolute bottom-[-30px] left-[-10px] w-24 h-24 rounded-full bg-white/5" />
+      {/* 主状态卡片 — 液态玻璃 */}
+      <div className="liquid-glass-hero rounded-3xl p-6">
         <div className="relative z-10">
           {!data?.birthDate && settings.babyAvatar && (
-            <div className="w-14 h-14 rounded-full border-2 border-white/40 overflow-hidden mx-auto mb-2 shadow">
+            <div className="w-14 h-14 rounded-full border-2 border-warm-200/60 overflow-hidden mx-auto mb-2 shadow-sm">
               <img src={settings.babyAvatar} alt="" className="w-full h-full object-cover" />
             </div>
           )}
-          <p className="text-white/80 text-sm text-center mb-1">距离上次喝奶</p>
-          <p className="text-5xl font-extrabold text-white text-center tracking-tight mb-4">
+          <p className="text-text-light text-sm text-center mb-1">距离上次喝奶</p>
+          <p className="text-5xl font-extrabold text-text text-center tracking-tight mb-4">
             {lastRecord ? formatTimeSince(lastRecord.at) : '--'}
           </p>
           {lastRecord && (
             <div className="flex justify-center gap-2 flex-wrap">
-              <span className="inline-flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1.5 text-sm text-white">
+              <span className="liquid-glass-pill inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-text">
                 🕐 {formatTime(lastRecord.at)}
               </span>
-              <span className="inline-flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1.5 text-sm text-white">
+              <span className="liquid-glass-pill inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-sm text-text">
                 🍼 {lastRecord.amountMl}ml
               </span>
               <span
@@ -255,10 +253,10 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
         </div>
       </div>
 
-      {/* 自定义记录按钮 */}
+      {/* 自定义记录按钮 — 液态玻璃 */}
       <button
         onClick={() => { setShowCustom(true); setCustomTime(new Date().toTimeString().slice(0, 5)) }}
-        className="w-full py-4 rounded-2xl bg-gradient-to-r from-warm-400 to-warm-500 text-white text-lg font-semibold shadow-md active:scale-[0.98] transition-transform"
+        className="w-full py-4 rounded-2xl liquid-glass-btn text-lg font-semibold active:scale-[0.98] transition-transform"
       >
         ✏️ 自定义记录
       </button>
@@ -456,11 +454,11 @@ export default function Home({ data, error, onRefresh, onAdd }: Props) {
       {successMl !== null && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center pointer-events-none">
           <div className={`flex flex-col items-center gap-3 ${successFading ? 'animate-success-out' : 'animate-success-in'}`}>
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-warm-400 to-warm-500 flex items-center justify-center shadow-lg">
+            <div className="w-20 h-20 rounded-full liquid-glass-hero flex items-center justify-center shadow-lg">
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
                 <path
                   d="M10 20 L17 27 L30 13"
-                  stroke="white"
+                  stroke="var(--color-warm-500)"
                   strokeWidth="3.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
