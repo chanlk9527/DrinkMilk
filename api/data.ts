@@ -18,6 +18,8 @@ interface AppData {
   colorMap?: Record<string, string>
   birthDate?: string
   growthRecords?: { id: string; date: string; weightKg?: number; heightCm?: number; headCm?: number; notes?: string }[]
+  diaperRecords?: { id: string; at: string; type: string; color?: string; consistency?: string; by: string; notes?: string }[]
+  sleepRecords?: { id: string; startAt: string; endAt?: string; by: string; notes?: string }[]
 }
 
 function generateFamilyId(): string {
@@ -39,6 +41,10 @@ function dataKey(familyId: string) {
 
 function avatarKey(familyId: string) {
   return `family:${familyId}:avatar`
+}
+
+function vaccineKey(familyId: string) {
+  return `family:${familyId}:vaccines`
 }
 
 function codeKey(code: string) {
@@ -73,7 +79,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (req.method === 'POST') {
-      const { action, record, recordId, data: fullData, familyId, babyName, familyCode, quickAmounts, colorMap, babyAvatar, birthDate, growthRecord, growthRecordId } = req.body
+      const { action, record, recordId, data: fullData, familyId, babyName, familyCode, quickAmounts, colorMap, babyAvatar, birthDate, growthRecord, growthRecordId, diaperRecord, diaperRecordId, sleepRecord, sleepRecordId } = req.body
 
       if (action === 'create_family') {
         const newId = generateFamilyId()
@@ -114,6 +120,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           await redis.del(avatarKey(familyId))
         }
         return res.json({ ok: true })
+      } else if (action === 'get_vaccines') {
+        const vaccines = await redis.get<{ records: unknown[]; skipped: unknown[] }>(vaccineKey(familyId))
+        return res.json({ ok: true, vaccines: vaccines || { records: [], skipped: [] } })
+      } else if (action === 'save_vaccines') {
+        const { vaccines } = req.body
+        await redis.set(vaccineKey(familyId), vaccines)
+        return res.json({ ok: true })
       }
 
       const data = await getFamilyData(familyId)
@@ -143,6 +156,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         data.growthRecords.push(growthRecord)
       } else if (action === 'delete_growth') {
         data.growthRecords = (data.growthRecords ?? []).filter(r => r.id !== growthRecordId)
+      } else if (action === 'add_diaper') {
+        if (!data.diaperRecords) data.diaperRecords = []
+        data.diaperRecords.push(diaperRecord)
+      } else if (action === 'delete_diaper') {
+        data.diaperRecords = (data.diaperRecords ?? []).filter(r => r.id !== diaperRecordId)
+      } else if (action === 'add_sleep') {
+        if (!data.sleepRecords) data.sleepRecords = []
+        data.sleepRecords.push(sleepRecord)
+      } else if (action === 'update_sleep') {
+        data.sleepRecords = (data.sleepRecords ?? []).map(r => r.id === sleepRecord.id ? sleepRecord : r)
+      } else if (action === 'delete_sleep') {
+        data.sleepRecords = (data.sleepRecords ?? []).filter(r => r.id !== sleepRecordId)
       } else if (action === 'full_save') {
         await setFamilyData(familyId, fullData)
         return res.json({ ok: true })

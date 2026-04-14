@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
-import type { AppData, FeedRecord, GrowthRecord } from './lib/types'
+import type { AppData, FeedRecord, GrowthRecord, DiaperRecord, SleepRecord } from './lib/types'
 import { getSettings, saveSettings, getCachedData, setCachedData, clearAllData } from './lib/storage'
-import { loadData, addRecord, updateRecord, deleteRecord, addGrowthRecord, deleteGrowthRecord } from './lib/google-drive'
+import { loadData, addRecord, updateRecord, deleteRecord, addGrowthRecord, deleteGrowthRecord, addDiaperRecord, deleteDiaperRecord, addSleepRecord, updateSleepRecord, deleteSleepRecord } from './lib/google-drive'
 import { assignCaregiverColor } from './lib/utils'
 import { useNightMode } from './lib/night-mode'
 import Layout from './components/Layout'
@@ -131,6 +131,88 @@ export default function App() {
     }
   }, [])
 
+  // ---- 换尿布 ----
+  const handleAddDiaper = useCallback(async (record: DiaperRecord) => {
+    setData(prev => {
+      if (!prev) return prev
+      const updated = { ...prev, diaperRecords: [...(prev.diaperRecords ?? []), record] }
+      setCachedData(updated)
+      return updated
+    })
+    try {
+      const freshData = await addDiaperRecord(record)
+      setData(freshData)
+      setCachedData(freshData)
+    } catch {
+      setError('保存失败，请重试')
+    }
+  }, [])
+
+  const handleDeleteDiaper = useCallback(async (recordId: string) => {
+    setData(prev => {
+      if (!prev) return prev
+      const updated = { ...prev, diaperRecords: (prev.diaperRecords ?? []).filter(r => r.id !== recordId) }
+      setCachedData(updated)
+      return updated
+    })
+    try {
+      const freshData = await deleteDiaperRecord(recordId)
+      setData(freshData)
+      setCachedData(freshData)
+    } catch {
+      setError('删除失败，请重试')
+    }
+  }, [])
+
+  // ---- 睡眠 ----
+  const handleAddSleep = useCallback(async (record: SleepRecord) => {
+    setData(prev => {
+      if (!prev) return prev
+      const updated = { ...prev, sleepRecords: [...(prev.sleepRecords ?? []), record] }
+      setCachedData(updated)
+      return updated
+    })
+    try {
+      const freshData = await addSleepRecord(record)
+      setData(freshData)
+      setCachedData(freshData)
+    } catch {
+      setError('保存失败，请重试')
+    }
+  }, [])
+
+  const handleUpdateSleep = useCallback(async (record: SleepRecord) => {
+    setData(prev => {
+      if (!prev) return prev
+      const updated = { ...prev, sleepRecords: (prev.sleepRecords ?? []).map(r => r.id === record.id ? record : r) }
+      setCachedData(updated)
+      return updated
+    })
+    try {
+      const freshData = await updateSleepRecord(record)
+      setData(freshData)
+      setCachedData(freshData)
+    } catch {
+      setError('更新失败，请重试')
+    }
+  }, [])
+
+  const handleDeleteSleep = useCallback(async (recordId: string) => {
+    setData(prev => {
+      if (!prev) return prev
+      const updated = { ...prev, sleepRecords: (prev.sleepRecords ?? []).filter(r => r.id !== recordId) }
+      setCachedData(updated)
+      return updated
+    })
+    try {
+      const freshData = await deleteSleepRecord(recordId)
+      setData(freshData)
+      setCachedData(freshData)
+    } catch {
+      setError('删除失败，请重试')
+    }
+  }, [])
+
   const handleSetupComplete = (info: { babyName: string; myName: string; familyId: string; familyCode: string }) => {
     saveSettings({
       babyName: info.babyName,
@@ -157,7 +239,11 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={
-            <Home data={data} loading={loading} error={error} onRefresh={refresh} onAdd={handleAdd} />
+            <Home data={data} loading={loading} error={error} onRefresh={refresh}
+              onAdd={handleAdd}
+              onAddDiaper={handleAddDiaper} onDeleteDiaper={handleDeleteDiaper}
+              onAddSleep={handleAddSleep} onUpdateSleep={handleUpdateSleep} onDeleteSleep={handleDeleteSleep}
+            />
           } />
           <Route path="/history" element={
             <History data={data} onUpdate={handleUpdate} onDelete={handleDelete} />
@@ -168,6 +254,7 @@ export default function App() {
           <Route path="/growth" element={
             <Growth data={data} onAddGrowth={handleAddGrowth} onDeleteGrowth={handleDeleteGrowth} />
           } />
+
           <Route path="/settings" element={
             <Settings data={data} onRefresh={refresh} onLeaveFamily={handleLeaveFamily} loading={loading} nightMode={nightMode} />
           } />

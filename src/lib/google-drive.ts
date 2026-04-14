@@ -103,7 +103,34 @@ export async function setAvatar(babyAvatar: string | null): Promise<void> {
   if (!result.ok) throw new Error(result.error || '保存头像失败')
 }
 
-import type { GrowthRecord } from './types'
+import type { GrowthRecord, DiaperRecord, SleepRecord } from './types'
+import type { VaccineRecord, VaccineSkipRecord } from './vaccines'
+
+export interface VaccineCloudData {
+  records: VaccineRecord[]
+  skipped: VaccineSkipRecord[]
+}
+
+export async function loadVaccineData(): Promise<VaccineCloudData> {
+  const resp = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'get_vaccines', familyId: getFamilyId() }),
+  })
+  const result = await resp.json()
+  if (!result.ok) throw new Error(result.error || '获取疫苗数据失败')
+  return result.vaccines
+}
+
+export async function saveVaccineData(vaccines: VaccineCloudData): Promise<void> {
+  const resp = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'save_vaccines', familyId: getFamilyId(), vaccines }),
+  })
+  const result = await resp.json()
+  if (!result.ok) throw new Error(result.error || '保存疫苗数据失败')
+}
 
 export async function addGrowthRecord(growthRecord: GrowthRecord): Promise<AppData> {
   const resp = await fetch(API_URL, {
@@ -121,6 +148,65 @@ export async function deleteGrowthRecord(growthRecordId: string): Promise<AppDat
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ action: 'delete_growth', familyId: getFamilyId(), growthRecordId }),
+  })
+  const result = await resp.json()
+  if (!result.ok) throw new Error(result.error || '删除失败')
+  return result.data
+}
+
+// ---- 换尿布记录 ----
+
+export async function addDiaperRecord(diaperRecord: DiaperRecord): Promise<AppData> {
+  const resp = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'add_diaper', familyId: getFamilyId(), diaperRecord }),
+  })
+  const result = await resp.json()
+  if (!result.ok) throw new Error(result.error || '保存失败')
+  return result.data
+}
+
+export async function deleteDiaperRecord(diaperRecordId: string): Promise<AppData> {
+  const resp = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'delete_diaper', familyId: getFamilyId(), diaperRecordId }),
+  })
+  const result = await resp.json()
+  if (!result.ok) throw new Error(result.error || '删除失败')
+  return result.data
+}
+
+// ---- 睡眠记录 ----
+
+export async function addSleepRecord(sleepRecord: SleepRecord): Promise<AppData> {
+  const resp = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'add_sleep', familyId: getFamilyId(), sleepRecord }),
+  })
+  const result = await resp.json()
+  if (!result.ok) throw new Error(result.error || '保存失败')
+  return result.data
+}
+
+export async function updateSleepRecord(sleepRecord: SleepRecord): Promise<AppData> {
+  const resp = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'update_sleep', familyId: getFamilyId(), sleepRecord }),
+  })
+  const result = await resp.json()
+  if (!result.ok) throw new Error(result.error || '更新失败')
+  return result.data
+}
+
+export async function deleteSleepRecord(sleepRecordId: string): Promise<AppData> {
+  const resp = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'delete_sleep', familyId: getFamilyId(), sleepRecordId }),
   })
   const result = await resp.json()
   if (!result.ok) throw new Error(result.error || '删除失败')

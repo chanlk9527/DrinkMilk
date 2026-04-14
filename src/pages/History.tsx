@@ -92,7 +92,7 @@ export default function History({ data, onUpdate, onDelete }: Props) {
               </p>
             </div>
             <div className="relative pl-6">
-              <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-warm-100 rounded-full" />
+              <div className="absolute left-[5px] top-2 bottom-2 w-0.5 bg-warm-100 rounded-full" />
               <div>
                 {items.map((r, idx) => (
                   <div key={r.id}>
