@@ -9,7 +9,7 @@ interface Props {
   onDelete: (recordId: string) => Promise<void>
 }
 
-const HISTORY_PAGE_DAYS = 30
+const HISTORY_PAGE_DAYS = 15
 const EMPTY_RECORDS: FeedRecord[] = []
 
 export default function History({ data, onUpdate, onDelete }: Props) {
@@ -253,7 +253,7 @@ export default function History({ data, onUpdate, onDelete }: Props) {
           onClick={() => setVisibleDays(days => days + HISTORY_PAGE_DAYS)}
           className="w-full py-3 mb-4 rounded-xl bg-warm-50 text-warm-500 text-sm font-medium active:scale-[0.98] transition-all"
         >
-          加载更早的 30 天记录
+          加载更早的 {HISTORY_PAGE_DAYS} 天记录
         </button>
       )}
     </div>
