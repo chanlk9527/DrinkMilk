@@ -74,7 +74,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!familyId) return res.status(400).json({ ok: false, error: '缺少 familyId' })
       const data = await getFamilyData(familyId)
       // 不再在主数据中返回头像，头像通过 get_avatar 单独获取
-      const { babyAvatar: _removed, ...dataWithoutAvatar } = data
+      const dataWithoutAvatar = { ...data } as AppData & { babyAvatar?: string }
+      delete dataWithoutAvatar.babyAvatar
       return res.json(dataWithoutAvatar)
     }
 

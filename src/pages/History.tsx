@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { AppData, FeedRecord } from '../lib/types'
 import { DEFAULT_PRESET_TAGS } from '../lib/types'
 import { formatTime, formatDate, formatInterval } from '../lib/utils'
@@ -9,6 +9,9 @@ interface Props {
   onDelete: (recordId: string) => Promise<void>
 }
 
+const HISTORY_PAGE_DAYS = 30
+const EMPTY_RECORDS: FeedRecord[] = []
+
 export default function History({ data, onUpdate, onDelete }: Props) {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editAmount, setEditAmount] = useState('')
@@ -16,6 +19,7 @@ export default function History({ data, onUpdate, onDelete }: Props) {
   const [editTags, setEditTags] = useState<string[]>([])
   const [editCustomNote, setEditCustomNote] = useState('')
   const [saving, setSaving] = useState(false)
+  const [visibleDays, setVisibleDays] = useState(HISTORY_PAGE_DAYS)
 
   const presetTags = data?.presetTags ?? DEFAULT_PRESET_TAGS
 
@@ -25,15 +29,35 @@ export default function History({ data, onUpdate, onDelete }: Props) {
     )
   }
 
-  const records = [...(data?.records ?? [])].sort(
-    (a, b) => new Date(b.at).getTime() - new Date(a.at).getTime()
+  const allRecords = data?.records ?? EMPTY_RECORDS
+
+  const cutoffTime = useMemo(() => {
+    const cutoff = new Date()
+    cutoff.setHours(0, 0, 0, 0)
+    cutoff.setDate(cutoff.getDate() - visibleDays + 1)
+    return cutoff.getTime()
+  }, [visibleDays])
+
+  const records = useMemo(() =>
+    allRecords
+      .filter(r => new Date(r.at).getTime() >= cutoffTime)
+      .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime()),
+    [allRecords, cutoffTime]
   )
 
-  const grouped = records.reduce<Record<string, typeof records>>((acc, r) => {
-    const key = formatDate(r.at)
-    ;(acc[key] ??= []).push(r)
-    return acc
-  }, {})
+  const grouped = useMemo(() =>
+    records.reduce<Record<string, FeedRecord[]>>((acc, r) => {
+      const key = formatDate(r.at)
+      ;(acc[key] ??= []).push(r)
+      return acc
+    }, {}),
+    [records]
+  )
+
+  const hasOlderRecords = useMemo(
+    () => allRecords.some(r => new Date(r.at).getTime() < cutoffTime),
+    [allRecords, cutoffTime]
+  )
 
   const startEdit = (r: FeedRecord) => {
     setEditingId(r.id)
@@ -67,7 +91,7 @@ export default function History({ data, onUpdate, onDelete }: Props) {
     await onDelete(id)
   }
 
-  if (records.length === 0) {
+  if (allRecords.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-text-light">
         <div className="w-20 h-20 rounded-full bg-warm-50 flex items-center justify-center mb-4">
@@ -80,7 +104,17 @@ export default function History({ data, onUpdate, onDelete }: Props) {
 
   return (
     <div className="px-5 pt-6 pb-4 max-w-lg mx-auto">
-      <h1 className="text-xl font-bold text-text mb-5">喝奶记录</h1>
+      <div className="flex items-center justify-between mb-5">
+        <h1 className="text-xl font-bold text-text">喝奶记录</h1>
+        <span className="text-xs text-text-light bg-warm-50 rounded-full px-2.5 py-1">
+          最近 {visibleDays} 天
+        </span>
+      </div>
+      {records.length === 0 && (
+        <div className="glass-card rounded-xl px-4 py-6 mb-5 text-center text-sm text-text-light">
+          最近 {visibleDays} 天没有喝奶记录
+        </div>
+      )}
       {Object.entries(grouped).map(([date, items]) => {
         const dayTotal = items.reduce((s, r) => s + r.amountMl, 0)
         return (
@@ -213,6 +247,15 @@ export default function History({ data, onUpdate, onDelete }: Props) {
           </div>
         )
       })}
+      {hasOlderRecords && (
+        <button
+          type="button"
+          onClick={() => setVisibleDays(days => days + HISTORY_PAGE_DAYS)}
+          className="w-full py-3 mb-4 rounded-xl bg-warm-50 text-warm-500 text-sm font-medium active:scale-[0.98] transition-all"
+        >
+          加载更早的 30 天记录
+        </button>
+      )}
     </div>
   )
 }
