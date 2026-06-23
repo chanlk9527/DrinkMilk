@@ -3,27 +3,39 @@ import {
   ResponsiveContainer, LineChart, Line, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from 'recharts'
-import type { AppData } from '../lib/types'
-import type { TimeRange } from '../lib/stats'
+import type { AppData, FeedRecord } from '../lib/types'
 import { getTrendData, getIntervalDistribution, getPerFeedingTrend } from '../lib/stats'
 
 interface Props {
   data: AppData | null
 }
 
-const rangeLabels: Record<TimeRange, string> = {
-  daily: '每日',
-  weekly: '每周',
-  monthly: '每月',
-}
+type DailyWindow = 7 | 30
+type FeedingWindow = 10 | 30
+
+const EMPTY_RECORDS: FeedRecord[] = []
+const DAILY_WINDOWS: DailyWindow[] = [7, 30]
+const FEEDING_WINDOWS: FeedingWindow[] = [10, 30]
 
 export default function Stats({ data }: Props) {
-  const [range, setRange] = useState<TimeRange>('daily')
-  const records = data?.records ?? []
+  const [dailyWindow, setDailyWindow] = useState<DailyWindow>(30)
+  const [feedingWindow, setFeedingWindow] = useState<FeedingWindow>(30)
+  const records = data?.records ?? EMPTY_RECORDS
 
-  const trendData = useMemo(() => getTrendData(records, range), [records, range])
+  const dailyRecords = useMemo(() => {
+    const cutoff = new Date()
+    cutoff.setHours(0, 0, 0, 0)
+    cutoff.setDate(cutoff.getDate() - dailyWindow + 1)
+    const cutoffTime = cutoff.getTime()
+    return records.filter(record => new Date(record.at).getTime() >= cutoffTime)
+  }, [records, dailyWindow])
+
+  const trendData = useMemo(() => getTrendData(dailyRecords, 'daily'), [dailyRecords])
   const intervalData = useMemo(() => getIntervalDistribution(records), [records])
-  const perFeedingData = useMemo(() => getPerFeedingTrend(records), [records])
+  const perFeedingData = useMemo(
+    () => getPerFeedingTrend(records).slice(-feedingWindow),
+    [records, feedingWindow]
+  )
 
   if (records.length === 0) {
     return (
@@ -43,28 +55,29 @@ export default function Stats({ data }: Props) {
       {/* 奶量趋势 */}
       <div className="glass-card rounded-2xl p-4">
         <div className="flex items-center justify-between mb-4">
-          <p className="text-base font-medium text-text">奶量趋势</p>
+          <p className="text-base font-medium text-text">每日奶量趋势</p>
           <div className="flex bg-warm-50 rounded-lg p-0.5">
-            {(Object.keys(rangeLabels) as TimeRange[]).map(r => (
+            {DAILY_WINDOWS.map(window => (
               <button
-                key={r}
-                onClick={() => setRange(r)}
+                key={window}
+                onClick={() => setDailyWindow(window)}
                 className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${
-                  range === r
+                  dailyWindow === window
                     ? 'bg-warm-400 text-white shadow-sm'
                     : 'text-text-light'
                 }`}
               >
-                {rangeLabels[r]}
+                {window}天
               </button>
             ))}
           </div>
         </div>
 
         {trendData.length > 0 ? (
-          <div className="h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={trendData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+          <>
+            <div className="h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={trendData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#FFE8D0" />
                 <XAxis
                   dataKey="label"
@@ -113,9 +126,13 @@ export default function Stats({ data }: Props) {
                   strokeDasharray="5 5"
                   dot={{ r: 2.5, fill: '#E8863A' }}
                 />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <p className="text-xs text-text-light text-center mt-2">
+              仅展示最近 {dailyWindow} 天的每日统计
+            </p>
+          </>
         ) : (
           <p className="text-center text-text-light text-sm py-8">该时间范围暂无数据</p>
         )}
@@ -124,7 +141,7 @@ export default function Stats({ data }: Props) {
         {trendData.length > 0 && (
           <div className="grid grid-cols-3 gap-2 mt-3">
             <SummaryCard
-              label={`${rangeLabels[range]}均量`}
+              label="日均奶量"
               value={`${Math.round(trendData.reduce((s, d) => s + d.totalMl, 0) / trendData.length)}`}
               unit="ml"
             />
@@ -134,7 +151,7 @@ export default function Stats({ data }: Props) {
               unit="ml"
             />
             <SummaryCard
-              label={`${rangeLabels[range]}均次`}
+              label="日均次数"
               value={`${(trendData.reduce((s, d) => s + d.count, 0) / trendData.length).toFixed(1)}`}
               unit="次"
             />
@@ -144,7 +161,24 @@ export default function Stats({ data }: Props) {
 
       {/* 单次奶量变化趋势 */}
       <div className="glass-card rounded-2xl p-4">
-        <p className="text-base font-medium text-text mb-4">单次奶量变化</p>
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-base font-medium text-text">单次奶量变化</p>
+          <div className="flex bg-warm-50 rounded-lg p-0.5">
+            {FEEDING_WINDOWS.map(window => (
+              <button
+                key={window}
+                onClick={() => setFeedingWindow(window)}
+                className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${
+                  feedingWindow === window
+                    ? 'bg-warm-400 text-white shadow-sm'
+                    : 'text-text-light'
+                }`}
+              >
+                {window}次
+              </button>
+            ))}
+          </div>
+        </div>
 
         {perFeedingData.length > 0 ? (
           <>
@@ -203,7 +237,7 @@ export default function Stats({ data }: Props) {
               </ResponsiveContainer>
             </div>
             <p className="text-xs text-text-light text-center mt-2">
-              每次喂奶的奶量及 5 次移动平均趋势线，观察宝宝食量增长
+              仅展示最近 {feedingWindow} 次喂奶及 5 次移动平均趋势线
             </p>
           </>
         ) : (
